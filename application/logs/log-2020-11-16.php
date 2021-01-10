@@ -1,0 +1,17 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+ERROR - 2020-11-16 16:57:50 --> Could not find the language line "Suppliers"
+ERROR - 2020-11-16 16:57:50 --> Could not find the language line "Rooms"
+ERROR - 2020-11-16 16:57:50 --> Could not find the language line "stores"
+ERROR - 2020-11-16 16:57:52 --> Could not find the language line "Suppliers"
+ERROR - 2020-11-16 16:57:52 --> Could not find the language line "Rooms"
+ERROR - 2020-11-16 16:57:52 --> Could not find the language line "stores"
+ERROR - 2020-11-16 16:57:57 --> Could not find the language line "Suppliers"
+ERROR - 2020-11-16 16:57:57 --> Could not find the language line "Rooms"
+ERROR - 2020-11-16 16:57:57 --> Could not find the language line "stores"
+ERROR - 2020-11-16 16:57:59 --> Could not find the language line "Suppliers"
+ERROR - 2020-11-16 16:57:59 --> Could not find the language line "Rooms"
+ERROR - 2020-11-16 16:57:59 --> Could not find the language line "stores"
+ERROR - 2020-11-16 16:58:01 --> Could not find the language line "Suppliers"
+ERROR - 2020-11-16 16:58:01 --> Could not find the language line "Rooms"
+ERROR - 2020-11-16 16:58:01 --> Could not find the language line "stores"
