@@ -10,55 +10,6 @@
                             <?= _l('go_back'); ?></a>
                     <?php endif; ?>
                 </div>
-                <div class="col-md-12 mtop15">
-                    <div class="panel-heading info-header">
-                        <h3 class="pull-left"> <?= _l('appointment_overview'); ?></h3>
-                        <a data-toggle="tooltip" title="<?= _l('appointment_public_url'); ?>" class="appointment_public_url pull-right" href="<?= $appointment['public_url']; ?>" target="_blank">
-                            <i class="fa fa-external-link-square appointment_public_link" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                    <span class="spmodified_fit_center">
-                        <boldit><?= _l('appointment_status_text'); ?></boldit>
-                        <h3 class="appointment_status_info">
-                            <?php
-
-                            if ($appointment['cancelled']) {
-                                echo '<span class="label label-danger">' . strtoupper(_l('appointment_cancelled')) . '</span>';
-                            } else if (
-                                !$appointment['finished']
-                                && !$appointment['cancelled']
-                                && !$appointment['approved']
-                                && date('Y-m-d H:i', strtotime($appointment['date'] . ' ' . $appointment['start_hour'])) < date('Y-m-d H:i')
-                            ) {
-                                echo '<span class="label label-danger">' . strtoupper(_l('appointment_missed_label')) . '</span>';
-                            } else if (
-                                !$appointment['finished']
-                                && !$appointment['cancelled']
-                                && $appointment['approved'] == 1
-                            ) {
-                                echo '<span class="label label-info">' . strtoupper(_l('appointment_upcoming')) . '</span>';
-                            } else if (
-                                !$appointment['finished']
-                                && !$appointment['cancelled']
-                                && $appointment['approved'] == 0
-                            ) {
-                                echo '<span class="label label-warning">' . strtoupper(_l('appointment_pending_approval')) . '</span>';
-                                if (
-                                    $appointment['approved'] == 0
-                                    && $appointment['cancelled'] == 0
-                                    && is_admin() || $appointment['approved'] == 0
-                                    && $appointment['cancelled'] == 0
-                                    && staff_can('view', 'appointments')
-                                ) {
-                                    echo '<a class="label label-info mleft5 approve_appointment_single" onClick="disableButtonsAfterDelete()" href="' . admin_url('appointly/appointments/approve?appointment_id=' . $appointment['id']) . '">' . _l('appointment_approve') . '</a>';
-                                }
-                            } else {
-                                echo '<span class="label label-success">' . strtoupper(_l('appointment_finished')) . '</span>';
-                            }
-                            ?>
-                        </h3>
-                    </span>
-                </div>
                 <div class="row text-center">
 
                     <?php if ($appointment['cancel_notes'] !== NULL && $appointment['finished'] != 1) : ?>
