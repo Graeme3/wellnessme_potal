@@ -2,7 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Contracts_model extends App_Model
+class  Contracts_model extends App_Model
 {
     public function __construct()
     {
@@ -747,5 +747,12 @@ class Contracts_model extends App_Model
     public function get_contracts_types_values_chart_data()
     {
         return $this->contract_types_model->get_values_chart_data();
+    }
+
+    public function saveRegister($data)
+    {
+
+        $this->db->insert(db_prefix() . 'contracts', $data);
+        $insert_id = $this->db->insert_id();
     }
 }

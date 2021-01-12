@@ -139,6 +139,13 @@ if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'add_kb_an
     $route['clients/knowledge-base/(:any)'] = 'knowledge_base/article/$1';
 }
 
+$route['api/login']         =  'api/login';
+$route['api/register']      =  'api/register';
+$route['api/forgot']        =  'api/forgot';
+$route['api/getProduct']    =  'api/getProduct';
+$route['api/getMessages']   =  'api/getMessage';
+$route['api/invoices']      =  'api/getInvoices';
+
 /**
  * @deprecated 2.2.0
  * Fallback for auth clients area, changed in version 2.2.0
@@ -155,6 +162,8 @@ $route['forgot_password'] = 'authentication/forgot_password';
 $route['login']           = 'authentication/login';
 $route['logout']          = 'authentication/logout';
 $route['register']        = 'authentication/register';
+
+
 
 /**
  * Terms and conditions and Privacy Policy routes

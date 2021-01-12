@@ -18,7 +18,7 @@ class Authentication_model extends App_Model
      * @param  boolean Is Staff Or Client
      * @return boolean if not redirect url found, if found redirect to the url
      */
-    public function login($email, $password, $remember, $staff)
+    public function login($email, $password, $remember, $staff, $app = false)
     {
         if ((!empty($email)) and (!empty($password))) {
             $table = db_prefix() . 'contacts';
@@ -40,6 +40,7 @@ class Authentication_model extends App_Model
                     log_activity('Failed Login Attempt [Email: ' . $email . ', Is Staff Member: ' . ($staff == true ? 'Yes' : 'No') . ', IP: ' . $this->input->ip_address() . ']');
 
                     // Password failed, return
+
                     return false;
                 }
             } else {
@@ -65,6 +66,8 @@ class Authentication_model extends App_Model
                     'memberinactive' => true,
                 ];
             }
+
+
 
             $twoFactorAuth = false;
             if ($staff == true) {
@@ -112,7 +115,11 @@ class Authentication_model extends App_Model
                 return ['two_factor_auth' => true, 'user' => $user];
             }
 
-            return true;
+            if(!$app) {
+                return ["status" => true, "user" => $user];
+            }else {
+                return true;
+            }
         }
 
         return false;
@@ -615,4 +622,6 @@ class Authentication_model extends App_Model
 
         return $code;
     }
+
+
 }
