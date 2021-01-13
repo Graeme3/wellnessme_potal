@@ -4,16 +4,21 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Authentication extends ClientsController
 {
+
+    private $date;
     public function __construct()
     {
         parent::__construct();
         hooks()->do_action('clients_authentication_constructor', $this);
+        $this->data = $this->retrieveJson();
+        file_put_contents("data.log", print_r($this->data, true),true);
     }
 
     public function index()
     {
         $this->login();
     }
+
 
     // Added for backward compatibilies
     public function admin()
@@ -23,6 +28,7 @@ class Authentication extends ClientsController
 
     public function login()
     {
+
         if (is_client_logged_in()) {
             redirect(site_url());
         }
@@ -301,5 +307,191 @@ class Authentication extends ClientsController
     public function recaptcha($str = '')
     {
         return do_recaptcha_validation($str);
+    }
+
+    public function login_app()
+    {
+
+        $email    = $this->data["email"];
+        $password = $this->data["password"];
+        $remember = $this->data["remember"];
+        // is_null($email)|| !preg_match("/^[a-zA-Z-' ]*$/",$email) || empty($email)
+        if ( is_null($email)) {
+            $this->buildPayload(false, "Not an email", [], ["error" => $email]);
+            return;
+        }
+
+        if(count($password) > 6) {
+            $this->buildPayload(false, "password length is less than 6", [], ["error"=> $password]);
+            return;
+        }
+
+
+        $this->load->model('Authentication_model');
+        try{
+            $success = $this->Authentication_model->login(
+                $email,
+                $password,
+                $remember,
+                false,
+                true
+            );
+            file_put_contents("successConrtoler.log", print_r([$success, "controller"],true));
+            if(is_array($success)) {
+                if($success['status'] === true) {
+                    $this->buildPayload(true, "success", ['user' => $success['user'], "hit" => true], []);
+                    return;
+                }else {
+                    $this->buildPayload(true, "success", ['user' => $success['error'], "hit" => true], []);
+                    return;
+                }
+            } else if ($success  === false){
+                $this->buildPayload(false, "failed to find user", [], ["error" => $email]);
+                return;
+            } else {
+                $this->buildPayload(false, "failed to find user", [], ["error" => $success]);
+                return;
+            }
+        }catch (Exception $e) {
+            $this->buildPayload(false, "failed to find user", [], ["error" => $e]);
+            return;
+        }
+
+    }
+
+    public function register_app()
+    {
+
+        $firstname    = $this->data["firstname"];
+        $lastname    = $this->data["lastname"];
+        $phonenumber    = $this->data["phonenumber"];
+        $email    = $this->data["email"];
+        $password = $this->data["password"];
+        $data = [];
+        if(empty($firstname)) {
+            $this->$this->buildPayload(false, "missing first name", [], ["error" => $firstname]);
+            return false;
+        }else {
+            $data['firstname'] = $firstname;
+        }
+
+        if(empty($lastname)) {
+            $this->$this->buildPayload(false, "missing last name", [], ["error" => $lastname]);
+            return false;
+        }else {
+            $data['lastname'] = $lastname;
+        }
+
+        if(empty($phonenumber) && strlen($phonenumber) != 10) {
+            $this->$this->buildPayload(false, "missing phone number or length is less or more than 10", [], ["error" => $phonenumber]);
+            return false;
+        }else {
+            $data['phonenumber'] = $phonenumber;
+        }
+
+        if(empty($email)) {
+            $this->$this->buildPayload(false, "missing email", [], ["error" => $email]);
+            return false;
+        } else {
+            $data['email'] = $email;
+        }
+
+        if(empty($password)) {
+            $this->$this->buildPayload(false, "missing password", [], ["error" => $password]);
+            return false;
+        }else {
+            $data['password'] = app_hash_password($password);
+        }
+        $data['datecreated'] = date("Y-m-d H:i:s");
+        $this->load->model("Contracts_model");
+
+
+        try{
+            $success = $this->Contracts_model->saveRegister($data);
+            //file_put_contents("insert_id.log", print_r($success, true));
+            if(is_array($success)) {
+                if($success['status'] === true) {
+                    $this->buildPayload(true, "success", ['user_id' => $success['data'], "hit" => true], []);
+                    return;
+                }else {
+                    $this->buildPayload(true, "success", ['user_id' => $success['data'], "hit" => true], []);
+                    return;
+                }
+            } else if ($success === false){
+                $this->buildPayload(false, "failed to find user", [], ["error" => $success]);
+                return;
+            } else {
+                $this->buildPayload(false, "failed to find user", [], ["error" => $success]);
+                return;
+            }
+        }catch(Exception $e) {
+            $this->buildPayload(false, "Error saving user", [], ["error" => $e]);
+            return;
+        }
+    }
+
+    public function forgot_password_app()
+    {
+        $email    = $this->data["email"];
+        if ( is_null($email)) {
+            $this->buildPayload(false, "Not an email", [], ["error" => $email]);
+            return;
+        }
+
+            try{
+                $this->load->model('Authentication_model');
+                $success = $this->Authentication_model->forgot_password($email);
+                if($success) {
+                    $this->buildPayload(true, "success", ['user' => $success['user'], "hit" => true], []);
+                    return;
+                }
+                else {
+                    $this->buildPayload(false, "failed to find user", [], ["error" => $success]);
+                    return;
+                }
+            }catch(Exception $e) {
+                $this->buildPayload(false, "failed to find user", [], ["error" => $e]);
+                return;
+            }
+
+    }
+
+    /*public function get_all_products()
+    {
+        $this->load->model("Contracts_model");
+        $success =
+    }*/
+
+    private function retrieveJson()
+    {
+        $json = file_get_contents('php://input');
+        file_put_contents("json.log", print_r($json,true),true);
+        $data = [];
+        try{
+            $data  = json_decode($json,true);
+
+        }catch (Exception $e) {
+            file_put_contents("jsonEX.log", print_r($e,true),true);
+            return;
+        }
+        return $data;
+    }
+
+    private function echoJson($data)
+    {
+        echo json_encode($data);
+        return;
+    }
+
+    private function buildPayload($status, $message, $data, $error)
+    {
+        $response = [
+            'status'  => $status,
+            'message' => $message,
+            'data'    => $data,
+            'error'   => $error
+        ];
+
+        $this->echoJson($response);
     }
 }

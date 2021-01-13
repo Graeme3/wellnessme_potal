@@ -162,6 +162,7 @@ $route['forgot_password'] = 'authentication/forgot_password';
 $route['login']           = 'authentication/login';
 $route['logout']          = 'authentication/logout';
 $route['register']        = 'authentication/register';
+$route['login_app']       = 'authentication/login_app';
 
 
 

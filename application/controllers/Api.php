@@ -12,6 +12,10 @@ class Api extends ClientsController
         $this->data = $this->retrieveJson();
         file_put_contents("data.log", print_r($this->data),true);
     }
+    public function index()
+    {
+        echo json_encode(["test" => "Yes"]);
+    }
 
     public function login()
     {

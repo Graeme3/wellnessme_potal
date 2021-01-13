@@ -80,4 +80,4 @@ define('SESS_SAVE_PATH', 'sessions');
 /**
  * Enables CSRF Protection
  */
-define('APP_CSRF_PROTECTION', true);
+define('APP_CSRF_PROTECTION', false);

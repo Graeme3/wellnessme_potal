@@ -751,8 +751,26 @@ class  Contracts_model extends App_Model
 
     public function saveRegister($data)
     {
+        if(is_array($data)) {
+            $this->db->insert(db_prefix() . 'contacts', $data);
+            $insert_id = $this->db->insert_id();
+            file_put_contents("insert_id.log", print_r($insert_id, true));
+            if($insert_id) {
+                return ["status" => true, "data" => $insert_id];
+            }else {
+                return ["status" => false, "data" => $data];
+            }
+        }
+        else
+        {
+            return ["status" => false, "data" => "No data"];
+        }
 
-        $this->db->insert(db_prefix() . 'contracts', $data);
-        $insert_id = $this->db->insert_id();
+        return ['status' => false, 'data' => "Didn't hit the insert"];
+    }
+
+    public function getProducts()
+    {
+
     }
 }
